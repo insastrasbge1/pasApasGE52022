@@ -23,64 +23,82 @@ package fr.insa.beuvron.cours.multiTache.exemplesCours.exo1;
  * @author francois
  */
 public class PairImpairSynchroSleep {
-    
+
     public static int DEBUGLEVEL = -1;
-    public static void debug(int level,String mess) {
+
+    public static void debug(int level, String mess) {
         if (level <= DEBUGLEVEL) {
-            System.out.println("DEBUG ("+level+") : " + mess);
+            System.out.println("DEBUG (" + level + ") : " + mess);
         }
     }
 
-    public static class Pair extends Thread {
+    private Pair lePair;
+    private Impair leImpair;
+
+    public PairImpairSynchroSleep() {
+        this.lePair = this.new Pair();
+        this.leImpair = this.new Impair();
+    }
+
+    public class Pair extends Thread {
 
         @Override
         public void run() {
-            debug(0,"pair démarre");
+            debug(0, "pair démarre");
             for (int i = 0; i <= 10; i = i + 2) {
                 System.out.println(i);
-                
+                debug(1, "pair réveille impair");
+                leImpair.interrupt();
+
                 try {
-                    Thread.sleep(100);
+                    if (i != 10) {
+                        debug(1, "pair s'endord");
+                        Thread.sleep(Long.MAX_VALUE);
+                    }
                 } catch (InterruptedException ex) {
-                    throw new Error("ne devrait jamais arriver");
+                    debug(1, "pair se réveille");
                 }
             }
 
         }
     }
 
-    public static class Impair extends Thread {
+    public class Impair extends Thread {
 
         @Override
         public void run() {
             for (int i = 1; i <= 10; i = i + 2) {
-                System.out.println(i);
                 try {
-                    Thread.sleep(200);
+                    debug(1, "impair s'endord");
+                    Thread.sleep(Long.MAX_VALUE);
                 } catch (InterruptedException ex) {
-                    throw new Error("ne devrait jamais arriver");
+                    debug(1, "impair se réveille");
                 }
+                System.out.println(i);
+                debug(1, "impair réveille pair");
+                lePair.interrupt();
+
             }
 
         }
     }
 
-    public static void parallele() {
-        Thread pair = new Pair();
-        Thread impair = new Impair();
-        pair.start();
-        impair.start();
+    public void gogogo() {
+        lePair.start();
+        leImpair.start();
         try {
-            pair.join();
-            impair.join();
+            lePair.join();
+            lePair.join();
         } catch (InterruptedException ex) {
             throw new Error("ne devrait jamais arriver");
         }
-        System.out.println("c'est fini");
+        debug(0,"c'est fini");
     }
 
     public static void main(String[] args) {
-        parallele();
+        DEBUGLEVEL = 10;
+        PairImpairSynchroSleep pi = new PairImpairSynchroSleep();
+        pi.gogogo();
     }
 
 }
