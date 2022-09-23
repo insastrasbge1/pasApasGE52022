@@ -18,14 +18,11 @@
  */
 package fr.insa.beuvron.cours.multiTache.exemplesCours.exo1;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author francois
  */
-public class AvecThreads {
+public class PairImpairSansSynchro {
 
     public static class Pair extends Thread {
 
