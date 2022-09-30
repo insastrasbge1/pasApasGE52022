@@ -24,6 +24,7 @@ import static fr.insa.beuvron.cours.multiTache.exemplesCours.exo1.PairImpairSync
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,19 +46,23 @@ public class SimuSonde extends Thread {
     private Statut statut;
 
     // TODO !! synchro --> en faire un AtomicBoolean
-    private boolean stopRequested;
+    private AtomicBoolean stopRequested;
 
     public void demandeArret() {
-        this.stopRequested = true;
+        this.stopRequested.set(true);
     }
 
-    // TODO !! penser à la synchro --> indiquer que cette méthode est synchronized
+    public boolean arretDemande() {
+        return this.stopRequested.get();
+    }
+
     public Statut getStatut() {
-        return this.statut;
+        synchronized (this) {
+            return this.statut;
+        }
     }
 
-    // TODO !! penser à la synchro --> indiquer que cette méthode est synchronized
-    public void setStatut(Statut statut) {
+    public synchronized void setStatut(Statut statut) {
         this.statut = statut;
     }
 
@@ -71,10 +76,10 @@ public class SimuSonde extends Thread {
     public void run() {
         debug(0, "la sonde démarre");
         this.setStatut(Statut.RUNNING);
-         long deltaT = (long) (this.tempoSonde * (1 + Math.random()));
+        long deltaT = (long) (this.tempoSonde * (1 + Math.random()));
         debug(2, "la s'endord une première fois avant d'envoyer sa première donnée " + deltaT + " ms");
         Utils.sleepNoInterrupt(deltaT);
-        while (!this.stopRequested) {
+        while (!this.arretDemande()) {
             double data = Math.random();
             String message = "" + data + SEPARATEUR;
             byte[] asBytes = message.getBytes(Charset.forName("UTF8"));
