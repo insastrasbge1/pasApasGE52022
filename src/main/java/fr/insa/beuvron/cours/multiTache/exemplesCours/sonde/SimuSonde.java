@@ -71,10 +71,10 @@ public class SimuSonde extends Thread {
     public void run() {
         debug(0, "la sonde démarre");
         this.setStatut(Statut.RUNNING);
+         long deltaT = (long) (this.tempoSonde * (1 + Math.random()));
+        debug(2, "la s'endord une première fois avant d'envoyer sa première donnée " + deltaT + " ms");
+        Utils.sleepNoInterrupt(deltaT);
         while (!this.stopRequested) {
-            long deltaT = (long) (this.tempoSonde * (1 + Math.random()));
-            debug(2, "la sonde s'endord " + deltaT + " ms");
-            Utils.sleepNoInterrupt(deltaT);
             double data = Math.random();
             String message = "" + data + SEPARATEUR;
             byte[] asBytes = message.getBytes(Charset.forName("UTF8"));
@@ -84,6 +84,9 @@ public class SimuSonde extends Thread {
                 this.setStatut(Statut.ERRORIO);
                 Logger.getLogger(SimuSonde.class.getName()).log(Level.SEVERE, null, ex);
             }
+            deltaT = (long) (this.tempoSonde * (1 + Math.random()));
+            debug(2, "la sonde s'endord " + deltaT + " ms");
+            Utils.sleepNoInterrupt(deltaT);
         }
         this.setStatut(Statut.STOPPED);
     }
@@ -100,7 +103,7 @@ public class SimuSonde extends Thread {
     }
 
     public static void main(String[] args) {
-        PairImpairSynchroSleep.DEBUGLEVEL = 1;
+        PairImpairSynchroSleep.DEBUGLEVEL = 10;
         testV0();
     }
 
