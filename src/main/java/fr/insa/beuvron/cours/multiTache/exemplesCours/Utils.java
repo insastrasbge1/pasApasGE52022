@@ -27,6 +27,19 @@ import java.util.logging.Logger;
  */
 public class Utils {
     
+    public static int DEBUGLEVEL = -1;
+    
+    public static boolean DEBUGAFFICHETHREAD = true;
+    
+    public static void debug(int level,String message) {
+        String s = "DEBUG (" + level + ") : ";
+        if (DEBUGAFFICHETHREAD) {
+            s = s + "[" + Thread.currentThread().getName() + "] : ";
+        }
+        s = s + message;
+        System.out.println(s);
+    }
+    
     public static void sleepNoInterrupt(long millis) {
         try {
             Thread.sleep(millis);
