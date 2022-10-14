@@ -21,6 +21,7 @@ package fr.insa.beuvron.cours.multiTache.exemplesCours.sockets.sansThread;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
 
@@ -32,7 +33,8 @@ public class Client {
 
     public static void demarre() {
         try {
-            Socket soc = new Socket("localhost", 5555);
+            InetAddress adr = InetAddress.getByName("127.0.0.1");
+            Socket soc = new Socket(adr, 5555);
             try ( BufferedReader bin = new BufferedReader(
                     new InputStreamReader(soc.getInputStream(),
                             Charset.forName("UTF8")))) {
