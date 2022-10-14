@@ -26,34 +26,36 @@ import java.util.logging.Logger;
  * @author francois
  */
 public class Utils {
-    
+
     public static int DEBUGLEVEL = -1;
-    
+
     public static boolean DEBUGAFFICHETHREAD = true;
-    
-    public static void debug(int level,String message) {
-        String s = "DEBUG (" + level + ") : ";
-        if (DEBUGAFFICHETHREAD) {
-            s = s + "[" + Thread.currentThread().getName() + "] : ";
+
+    public static void debug(int level, String message) {
+        if (level <= DEBUGLEVEL) {
+            String s = "DEBUG (" + level + ") : ";
+            if (DEBUGAFFICHETHREAD) {
+                s = s + "[" + Thread.currentThread().getName() + "] : ";
+            }
+            s = s + message;
+            System.out.println(s);
         }
-        s = s + message;
-        System.out.println(s);
     }
-    
+
     public static void sleepNoInterrupt(long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException ex) {
-            throw new Error("unexpected interrupt",ex);
+            throw new Error("unexpected interrupt", ex);
         }
     }
-    
+
     public static void joinNoInterrupt(Thread t) {
         try {
             t.join();
         } catch (InterruptedException ex) {
-            throw new Error("unexpected interrupt",ex);
+            throw new Error("unexpected interrupt", ex);
         }
     }
-    
+
 }

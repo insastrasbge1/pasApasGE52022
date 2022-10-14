@@ -16,36 +16,39 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with CoursBeuvron.  If not, see <http://www.gnu.org/licenses/>.
  */
-package fr.insa.beuvron.cours.multiTache.exemplesCours.prodConso;
+package fr.insa.beuvron.cours.multiTache.exemplesCours.prodConso.synchro;
+
+import fr.insa.beuvron.cours.multiTache.exemplesCours.Utils;
 
 /**
  *
  * @author francois
  */
-public class Ressources {
+public class Consomateur extends Thread {
     
-    private int dispo;
+    private int id;
+    private Ressources commun;
+    private long tempsConso;
+
+    public Consomateur(int id,Ressources commun,long tempsConso) {
+        this.id = id;
+        this.commun = commun;
+        this.tempsConso = tempsConso;
+    }
     
-    public Ressources() {
-        this(0);
+    public String toString() {
+        return "Conso "+this.id;
     }
-
-    public Ressources(int val) {
-        this.dispo = val;
+    
+    @Override
+    public void run() {
+        while(true) {
+            Utils.sleepNoInterrupt(
+                    (long)(tempsConso*(Math.random()+0.5)));
+            Utils.debug(2, "demande conso");
+            this.commun.consomme();
+        }
+        
     }
-
-    /**
-     * @return the dispo
-     */
-    public int getDispo() {
-        return dispo;
-    }
-
-    /**
-     * @param dispo the dispo to set
-     */
-    public void setDispo(int dispo) {
-        this.dispo = dispo;
-    }    
     
 }
